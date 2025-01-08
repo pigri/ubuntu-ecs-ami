@@ -154,14 +154,32 @@ if [ -z "$ECS_INIT_URL" ]; then
     if grep -q "^cn-" <<<"$REGION"; then
         host_suffix=".cn"
     fi
-    ECS_INIT_URL="https://s3.$REGION.amazonaws.com${host_suffix}/amazon-ecs-agent-$REGION/ecs-init-$AGENT_VERSION-$INIT_REV.$AL_NAME.$ARCH.rpm"
+
+    if [ "$ARCH" == "x86_64" ]; then
+        ARCH="amd64"
+    fi
+
+    if [ "$ARCH" == "aarch64" ]; then
+        ARCH="arm64"
+    fi
+
+    ECS_INIT_URL="https://s3.$REGION.amazonaws.com${host_suffix}/amazon-ecs-agent-$REGION/amazon-ecs-init-$AGENT_VERSION-$INIT_REV.$ARCH.deb"
 fi
 
-curl -fLSs -o "$WORK_DIR/ecs-init.rpm" "$ECS_INIT_URL"
-curl -fLSs -o "$WORK_DIR/ecs-init.rpm.asc" "${ECS_INIT_URL}.asc"
+curl -fLSs -o "$WORK_DIR/ecs-init.deb" "$ECS_INIT_URL"
+curl -fLSs -o "$WORK_DIR/ecs-init.deb.asc" "${ECS_INIT_URL}.asc"
 # bypass gpg check until gpg util is available in minimal AMI
 # we've added a gpg check to our manual release steps until then
 gpg --import "$WORK_DIR/amazon-ecs-agent.gpg" || true
-gpg --verify "$WORK_DIR/ecs-init.rpm.asc" "$WORK_DIR/ecs-init.rpm" || true
+gpg --verify "$WORK_DIR/ecs-init.deb.asc" "$WORK_DIR/ecs-init.deb" || true
 
-sudo yum install -y "$WORK_DIR/ecs-init.rpm"
+sudo dpkg -i "$WORK_DIR/ecs-init.deb"
+
+
+sudo sed -i '/After=docker.service/a After=cloud-final.service' /lib/systemd/system/ecs.service
+# cloud-final.service: Job ecs.service/start deleted to break ordering cycle starting with cloud-final.service/start
+sudo sed -i '/^Documentation=/a DefaultDependencies=no' /usr/lib/systemd/system/ecs.service
+# systemd[1]: multi-user.target: Job ecs.service/start deleted to break ordering cycle starting with multi-user.target/start
+sudo sed -i '/^EnvironmentFile=-\/etc\/ecs\/ecs.config/a ExecStartPre=/bin/sleep 10' /usr/lib/systemd/system/ecs.service
+
+sudo systemctl daemon-reload

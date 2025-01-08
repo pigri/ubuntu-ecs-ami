@@ -6,10 +6,9 @@ It will create a private AMI in whatever account you are running it in.
 ## Instructions
 
 1. Setup AWS cli credentials.
-2. Make the recipe that you want, REGION must be specified. Options are: al1, al2, al2arm, al2gpu, al2keplergpu, al2inf, 
-al2kernel5dot10, al2kernel5dot10arm, al2kernel5dot10gpu, al2kernel5dot10inf, al2023, al2023arm, al2023neu.
+2. Make the recipe that you want, REGION must be specified. Options are: ubuntu2404 ubuntu2404arm ubuntu2404gpu ubuntu2404armgpu.
 ```
-REGION=us-west-2 make al2
+REGION=us-west-2 make ubuntu2404
 ```
 
 **NOTE**: `al2keplergpu` is a build recipe that this package supports to build ECS-Optimized GPU AMIs for instances with GPUs
@@ -40,7 +39,7 @@ make al2
 
 Any rpm package placed into the additional-packages/ directory will be uploaded to the instance and installed.
 
-**NOTE**: All packages must end with extension `"$(uname -m).rpm"`, ie `.x86_64.rpm` or `.aarch64.rpm`.
+**NOTE**: All packages must end with extension `"$(uname -m).deb"`, ie `.x86_64.deb` or `.aarch64.deb`.
 
 ## Cleanup
 

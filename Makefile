@@ -1,4 +1,4 @@
-PACKER_VERSION := 1.7.4
+PACKER_VERSION := 1.11.2
 KERNEL := $(shell uname -s | tr A-Z a-z)
 ARCH := $(shell uname -m)
 
@@ -21,16 +21,8 @@ packer:
 	unzip ./packer.zip
 	rm ./packer.zip
 
-release-al1.auto.pkrvars.hcl:
-	echo "Missing configuration file: release-al1.auto.pkrvars.hcl."
-	exit 1
-
-release-al2.auto.pkrvars.hcl:
-	echo "Missing configuration file: release-al2.auto.pkrvars.hcl."
-	exit 1
-
-release-al2023.auto.pkrvars.hcl:
-	echo "Missing configuration file: release-al2023.auto.pkrvars.hcl."
+release-ubuntu2404.auto.pkrvars.hcl:
+	echo "Missing configuration file: release-ubuntu2404.auto.pkrvars.hcl."
 	exit 1
 
 .PHONY: check-region
@@ -49,57 +41,21 @@ packer-fmt: packer
 validate: check-region init
 	./packer validate -var "region=${REGION}" .
 
-.PHONY: al1
-al1: check-region init validate release-al1.auto.pkrvars.hcl
-	./packer build -only="amazon-ebs.al1" -var "region=${REGION}" .
+.PHONY: ubuntu2404
+ubuntu2404: check-region init validate release-ubuntu2404.auto.pkrvars.hcl
+./packer build -only="amazon-ebs.ubuntu2404" -var "region=${REGION}" .
 
-.PHONY: al2
-al2: check-region init validate release-al2.auto.pkrvars.hcl
-	./packer build -only="amazon-ebs.al2" -var "region=${REGION}" .
+.PHONY: ubuntu2404gpu
+ubuntu2404gpu: check-region init validate release-ubuntu2404.auto.pkrvars.hcl
+	./packer build -only="amazon-ebs.ubuntu2404gpu" -var "region=${REGION}" .
 
-.PHONY: al2arm
-al2arm: check-region init validate release-al2.auto.pkrvars.hcl
-	./packer build -only="amazon-ebs.al2arm" -var "region=${REGION}" .
+.PHONY: ubuntu2404arm
+ubuntu2404arm: check-region init validate release-ubuntu2404.auto.pkrvars.hcl
+	./packer build -only="amazon-ebs.ubuntu2404arm" -var "region=${REGION}" .
 
-.PHONY: al2gpu
-al2gpu: check-region init validate release-al2.auto.pkrvars.hcl
-	./packer build -only="amazon-ebs.al2gpu" -var "region=${REGION}" .
-
-.PHONY: al2keplergpu
-al2keplergpu: check-region init validate release-al2.auto.pkrvars.hcl
-	./packer build -only="amazon-ebs.al2keplergpu" -var "region=${REGION}" .
-
-.PHONY: al2inf
-al2inf: check-region init validate release-al2.auto.pkrvars.hcl
-	./packer build -only="amazon-ebs.al2inf" -var "region=${REGION}" .
-
-.PHONY: al2kernel5dot10
-al2kernel5dot10: check-region init validate release-al2.auto.pkrvars.hcl
-	./packer build -only="amazon-ebs.al2kernel5dot10" -var "region=${REGION}" .
-
-.PHONY: al2kernel5dot10arm
-al2kernel5dot10arm: check-region init validate release-al2.auto.pkrvars.hcl
-	./packer build -only="amazon-ebs.al2kernel5dot10arm" -var "region=${REGION}" .
-
-.PHONY: al2kernel5dot10gpu
-al2kernel5dot10gpu: check-region init validate release-al2.auto.pkrvars.hcl
-	./packer build -only="amazon-ebs.al2kernel5dot10gpu" -var "region=${REGION}" .
-
-.PHONY: al2kernel5dot10inf
-al2kernel5dot10inf: check-region init validate release-al2.auto.pkrvars.hcl
-	./packer build -only="amazon-ebs.al2kernel5dot10inf" -var "region=${REGION}" .
-
-.PHONY: al2023
-al2023: check-region init validate release-al2023.auto.pkrvars.hcl
-	./packer build -only="amazon-ebs.al2023" -var "region=${REGION}" .
-
-.PHONY: al2023arm
-al2023arm: check-region init validate release-al2023.auto.pkrvars.hcl
-	./packer build -only="amazon-ebs.al2023arm" -var "region=${REGION}" .
-
-.PHONY: al2023neu
-al2023neu: check-region init validate release-al2023.auto.pkrvars.hcl
-	./packer build -only="amazon-ebs.al2023neu" -var "region=${REGION}" .
+.PHONY: ubuntu2404armgpu
+ubuntu2404armgpu: check-region init validate release-ubuntu2404.auto.pkrvars.hcl
+	./packer build -only="amazon-ebs.ubuntu2404armgpu" -var "region=${REGION}" .
 
 shellcheck:
 	curl -fLSs ${SHELLCHECK_URL} -o /tmp/shellcheck.tar.xz

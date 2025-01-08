@@ -3,7 +3,7 @@ set -ex
 
 # Below command actually runs `sudo dnf clean all` for AL2023.
 # See https://docs.aws.amazon.com/linux/al2023/ug/package-management.html for more details.
-sudo yum clean all
+sudo apt clean all
 
 function cleanup() {
     FILES=("$@")
@@ -46,7 +46,6 @@ INSTANCE_FILES=(
     "/var/lib/postfix/master.lock"
     "/var/spool/postfix/pid/master.pid"
     "/var/.updated"
-    "/var/cache/yum/x86_64/2/.gpgkeyschecked.yum"
 )
 echo "Cleaning up instance files"
 cleanup "${INSTANCE_FILES[@]}"
@@ -161,14 +160,14 @@ fi
 # delete a few items missed in https://docs.aws.amazon.com/imagebuilder/latest/userguide/security-best-practices.html
 sudo rm -rf \
     /etc/machine-id \
-    /var/cache/dnf \
-    /var/cache/yum \
     /tmp/* \
     /var/lib/dhcp/dhclient.* \
-    /var/lib/dnf/history* \
-    /var/lib/yum/history \
     /var/log/secure \
     /var/log/wtmp \
-    /etc/ssh/ssh_host*
+    /etc/ssh/ssh_host* \
+    /var/lib/apt/lists/* \
+    /var/lib/apt/cache/* \
+    /var/lib/docker/* \
+    /var/lib/ecs/data/*
 
 sudo touch /etc/machine-id

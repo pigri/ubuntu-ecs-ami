@@ -8,40 +8,16 @@ packer {
 }
 
 locals {
-  packages_al1    = "amazon-efs-utils ec2-net-utils acpid irqbalance numactl rng-tools docker-storage-setup"
-  packages_al2    = "amazon-efs-utils ec2-net-utils acpid amazon-ssm-agent yum-plugin-upgrade-helper iproute-tc"
-  packages_al2023 = "amazon-efs-utils amazon-ssm-agent amazon-ec2-net-utils acpid iproute-tc"
+  packages_ubuntu2404 = "gnupg2 ca-certificates curl nfs-common stunnel4 apparmor-utils apparmor-profiles"
 }
 
-variable "ami_name_prefix_al1" {
+variable "ami_name_prefix_ubuntu2404" {
   type        = string
   description = "Outputted AMI name prefix."
-  default     = "unofficial-amzn-ami-2018.03."
+  default     = "openshield-community-ubuntu2404-ami-ecs"
 }
 
-variable "ami_name_prefix_al2" {
-  type        = string
-  description = "Outputted AMI name prefix."
-  default     = "unofficial-amzn2-ami-ecs"
-}
-
-variable "ami_name_prefix_al2023" {
-  type        = string
-  description = "Outputted AMI name prefix."
-  default     = "unofficial-amzn2023-ami-ecs"
-}
-
-variable "ami_version_al1" {
-  type        = string
-  description = "Outputted AMI version."
-}
-
-variable "ami_version_al2" {
-  type        = string
-  description = "Outputted AMI version."
-}
-
-variable "ami_version_al2023" {
+variable "ami_version_ubuntu2404" {
   type        = string
   description = "Outputted AMI version."
 }
@@ -87,21 +63,21 @@ variable "runc_version" {
   default     = "1.1.14"
 }
 
-variable "docker_version_al2023" {
+variable "docker_version_ubuntu2404" {
   type        = string
-  description = "Docker version to build AL2023 AMI with."
+  description = "Docker version to build Ubuntu2404 AMI with."
   default     = "25.0.6"
 }
 
-variable "containerd_version_al2023" {
+variable "containerd_version_ubuntu2404" {
   type        = string
-  description = "Containerd version to build AL2023 AMI with."
+  description = "Containerd version to build Ubuntu2404 AMI with."
   default     = "1.7.20"
 }
 
-variable "runc_version_al2023" {
+variable "runc_version_ubuntu2404" {
   type        = string
-  description = "Runc version to build AL2023 AMI with."
+  description = "Runc version to build Ubuntu2404 AMI with."
   default     = "1.1.14"
 }
 
@@ -111,66 +87,19 @@ variable "exec_ssm_version" {
   default     = "3.3.859.0"
 }
 
-variable "source_ami_al2" {
+variable "source_ami_ubuntu2404" {
   type        = string
-  description = "Amazon Linux 2 source AMI to build from."
+  description = "Ubuntu 24.04 source AMI to build from."
 }
 
-variable "source_ami_al2arm" {
+variable "source_ami_ubuntu2404arm" {
   type        = string
-  description = "Amazon Linux 2 ARM source AMI to build from."
+  description = "Ubuntu 24.04 ARM source AMI to build from."
 }
 
-variable "source_ami_al2kernel5dot10" {
+variable "distribution_release_ubuntu2404" {
   type        = string
-  description = "Amazon Linux 2 Kernel 5.10 source AMI to build from."
-}
-
-variable "source_ami_al2kernel5dot10arm" {
-  type        = string
-  description = "Amazon Linux 2 Kernel 5.10 ARM source AMI to build from."
-}
-
-variable "source_ami_al2023" {
-  type        = string
-  description = "Amazon Linux 2023 source AMI to build from."
-}
-
-variable "source_ami_al2023arm" {
-  type        = string
-  description = "Amazon Linux 2023 ARM source AMI to build from."
-}
-
-variable "distribution_release_al2023" {
-  type        = string
-  description = "Amazon Linux 2023 distribution release."
-}
-
-variable "kernel_version_al2023" {
-  type        = string
-  description = "Amazon Linux 2023 kernel version."
-}
-
-variable "kernel_version_al2023arm" {
-  type        = string
-  description = "Amazon Linux 2023 ARM kernel version."
-}
-
-variable "source_ami_al1" {
-  type        = string
-  description = "Amazon Linux 1 source AMI to build from."
-}
-
-variable "docker_version_al1" {
-  type        = string
-  description = "Docker version to build AL1 AMI with."
-  default     = "20.10.13"
-}
-
-variable "ecs_version_al1" {
-  type        = string
-  description = "ECS version to build AL1 AMI with."
-  default     = "1.51.0"
+  description = "Ubuntu 24.04 distribution release."
 }
 
 variable "air_gapped" {
@@ -179,15 +108,9 @@ variable "air_gapped" {
   default     = ""
 }
 
-variable "ecs_init_url_al2" {
+variable "ecs_init_url_ubuntu2404" {
   type        = string
-  description = "Specify a particular ECS init URL for AL2 to install. If empty it will use the standard path."
-  default     = ""
-}
-
-variable "ecs_init_url_al2023" {
-  type        = string
-  description = "Specify a particular ECS init URL for AL2023 to install. If empty it will use the standard path."
+  description = "Specify a particular ECS init URL for Ubuntu2404 to install. If empty it will use the standard path."
   default     = ""
 }
 
@@ -206,7 +129,7 @@ variable "general_purpose_instance_types" {
 variable "gpu_instance_types" {
   type        = list(string)
   description = "List of available in-region instance types for GPU platform"
-  default     = ["c5.4xlarge"]
+  default     = ["g4dn.xlarge"]
 }
 
 variable "arm_instance_types" {
@@ -215,16 +138,10 @@ variable "arm_instance_types" {
   default     = ["m6g.xlarge"]
 }
 
-variable "inf_instance_types" {
+variable "arm_gpu_instance_types" {
   type        = list(string)
-  description = "List of available in-region instance types for INF platform"
-  default     = ["inf1.xlarge"]
-}
-
-variable "neu_instance_types" {
-  type        = list(string)
-  description = "List of available in-region instance types for NEU platform"
-  default     = ["inf1.xlarge"]
+  description = "List of available in-region instance types for ARM GPU platform"
+  default     = ["g5g.xlarge"]
 }
 
 variable "managed_daemon_base_url" {
@@ -267,4 +184,9 @@ variable "run_tags" {
   type        = map(string)
   description = "Tags to apply to resources (key-pair, SG, IAM, snapshot, interfaces and instance) used when building the AMI."
   default     = {}
+}
+
+variable "efs_utils_version" {
+  type        = string
+  description = "EFS utils version to build AMI with."
 }
